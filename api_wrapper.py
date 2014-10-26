@@ -19,12 +19,14 @@ class DribleAPI(object):
     ## Send a GET request to a specified API portion
     #
     #  @Param   portion     The portion that is appended to the base url for different query purpose
-    #  @Param   params      Parameter dictionary for GET request
-    #  @Param   kwargs      Other arguments
+    #  @Param   kwargs      Parameter dictionary for GET request
     #
     #  @Return  JSON response data
-    def __get(self, portion, params={}, **kwargs):
-        response = self.s.get(self.base_url + portion, params=params, **kwargs)
+    def __get(self, portion, **kwargs):
+        query_str = self.base_url + portion + '/apikey/' + dirble_key + '/'
+        for key in kwargs:
+            query_str += key + '/' + str(kwargs[key])
+        response = self.s.get(query_str)
         try:
             response.raise_for_status()
         except requests.HTTPError as e:
@@ -36,17 +38,21 @@ class DribleAPI(object):
             raise APIError(data['errormsg'], data)
         return data
 
+
     ## Get main, head categories
     #  @Return  a list of categories. Each category contains id, name, and description
     def get_main_categories(self):
-        return self.__get('/primaryCategories/apikey/' + dirble_key)
+        return self.__get(portion='primaryCategories')
 
-    def get_stations_list(self, cid):
-        query_str =  self.base_url + 'stations/apikey/{}/id/{}'.format(dirble_key, cid)
-        return requests.get(query_str).json()
+
+    ## Get station list in a category using cid
+    #  @Param   cid     category id
+    #  @Return  a list of stations. Each station contains id, name, streaurl,country, bitratem status
+    def get_station_list(self, cid):
+        return self.__get(portion='stations', id=cid)
 
 
 if __name__ == "__main__":
     api = DribleAPI()
     print(api.get_main_categories())
-    #print(api.get_stations_list(56))
+    #print(api.get_station_list(11))
