@@ -4,6 +4,7 @@ import requests
 
 ## Import api key
 from api_key import dirble_key
+from random import randint
 
 ## Raised when when problems with the apikey
 class APIError(RuntimeError):
@@ -57,6 +58,13 @@ class DribleAPI(object):
     #  @Return  A dictionary contains detail information of a station. Information include id, name ,streamurl, bitrate, country, urlid, website, status, songhistory, directory
     def get_station(self, sid):
         return self.__get(portion='station', id=sid)
+
+
+    ## Get random station by combining random category, station list search
+    def get_random_station(self):
+        categories = self.get_main_categories()
+        station_list = self.get_station_list(categories[randint(0, len(categories)-1)]['id'])
+        return self.get_station(station_list[randint(0, len(station_list)-1)]['id'])
 
 
 if __name__ == "__main__":
