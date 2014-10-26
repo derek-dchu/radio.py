@@ -31,13 +31,12 @@ class CreateDB:
                   'id' INTEGER,
                   'name' VARCHAR ,
                   'created_at' TIME DEFAULT CURRENT_TIME NOT NULL,
-                  'favourite_station_list_id' INTEGER,
-                  'favourite_category_list_id' INTEGER,
                   PRIMARY KEY (id)
                   '''
         )
 
     def create_favourite_station_table(self):
+        self.__drop_table('favourite_station')
         self.__create_table('favourite_station', '''
                 'id' INTEGER,
                 'user_id' INTEGER,
@@ -46,6 +45,7 @@ class CreateDB:
     )
 
     def create_favourite_category_table(self):
+        self.__drop_table('favourite_category')
         self.__create_table('favourite_category', '''
                 'id' INTEGER,
                 'user_id' INTEGER,
