@@ -34,7 +34,7 @@ class CreateDB:
         CreateDB.__create_table('user', '''
                   'id' INTEGER,
                   'username' VARCHAR UNIQUE ,
-                  'created_at' TIME DEFAULT CURRENT_TIME NOT NULL,
+                  'created_at' TIMESTAMP DEFAULT (datetime('now','localtime')) NOT NULL,
                   PRIMARY KEY (id)
                   '''
         )
