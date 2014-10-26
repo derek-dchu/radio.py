@@ -47,12 +47,20 @@ class DribleAPI(object):
 
     ## Get station list in a category using cid
     #  @Param   cid     category id
-    #  @Return  a list of stations. Each station contains id, name, streaurl,country, bitratem status
+    #  @Return  a list of stations. Each station contains id, name, streaurl, country, bitratem status
     def get_station_list(self, cid):
         return self.__get(portion='stations', id=cid)
 
 
+    ## Get information on a station by sid
+    #  @Param   sid     station id
+    #  @Return  A dictionary contains detail information of a station. Information include id, name ,streamurl, bitrate, country, urlid, website, status, songhistory, directory
+    def get_station(self, sid):
+        return self.__get(portion='station', id=sid)
+
+
 if __name__ == "__main__":
     api = DribleAPI()
-    print(api.get_main_categories())
+    #print(api.get_main_categories())
     #print(api.get_station_list(11))
+    print(api.get_station(9390))
