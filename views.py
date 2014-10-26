@@ -11,7 +11,6 @@ class View:
 
     ## clear page
     def clear(self):
-        return
         print(t.clear)
 
     def user_prompt(self, string):
@@ -47,12 +46,14 @@ class View:
     User name not found. Would you like to create an new account with username: {}? (Y/N)
     '''.format(username))
 
-    def player_menu(self, player_status):
+    def player_menu(self, station_name, volume):
         self.clear()
         return input('''
-    {}
+    {s_name}
+
+    volume: {vol}
 
     [1] Stop
     [2] Volume control
 
-    Your choice: '''.format(player_status))
+    Your choice: '''.format(s_name=station_name, vol=volume))

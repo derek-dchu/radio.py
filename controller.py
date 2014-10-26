@@ -4,7 +4,7 @@ __author__ = 'DerekHu'
 from api_wrapper import DribleAPI
 from models import User
 from views import View
-from player import MPC
+from mpd import MPDClient, ConnectionError, CommandError
 
 
 class Controller():
@@ -13,8 +13,13 @@ class Controller():
         self.api = DribleAPI()
         self.view = View()
         self.user = user
-        self.player = MPC()
+        self.player = MPDClient()
         self.current_station = None
+
+        ## Setup MPDClient
+        self.player.timeout = 10
+        self.player.idletimeout = None
+        self.player.connect("localhost", 6600)
 
     def login(self):
         while True:
@@ -46,19 +51,32 @@ class Controller():
 
             elif choice == '1':
                 current_station = self.api.get_random_station()
-                print(current_station['streamurl'])
-                player_status = self.player.add('http://37.187.79.56:3042/stream')
+                self.player.add(current_station['streamurl'])
+                self.player.play()
 
                 while True:
-                    choice = self.view.player_menu(player_status)
+                    choice = self.view.player_menu(current_station['name'], self.player.status()['volume'])
                     if choice == '1':
+                        ## Make sure connection
+                        try:
+                            self.player.connect("localhost", 6600)
+                        except ConnectionError:
+                            ## already connected
+                            pass
+
                         self.player.stop()
+                        self.player.clear()
                         break
 
+                    elif choice == '2':
+                        vol = self.view.user_prompt('Set volume to (0~100): ')
+                        try:
+                            self.player.setvol(vol)
+                        except CommandError:
+                            self.view.error("Invalid volume value, only accept an integer between 0-100")
 
             else:
                 continue
-
 
 if __name__ == '__main__':
     c = Controller()
