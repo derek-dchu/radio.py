@@ -29,7 +29,7 @@ class CreateDB:
         self.__drop_table('user')
         self.__create_table('user', '''
                   'id' INTEGER,
-                  'name' VARCHAR ,
+                  'username' VARCHAR UNIQUE ,
                   'created_at' TIME DEFAULT CURRENT_TIME NOT NULL,
                   PRIMARY KEY (id)
                   '''
